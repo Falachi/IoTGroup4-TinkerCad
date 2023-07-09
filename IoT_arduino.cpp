@@ -271,9 +271,9 @@ void displayTemp()
 void updateStrip()
 {
 	if (distanceStatus == true)
-		strip.setPixelColor(0, 255, 0, 0);
+		strip.setPixelColor(0, 255, 0, 0); //red
 	else
-		strip.setPixelColor(0, 0, 255, 30);
+		strip.setPixelColor(0, 0, 255, 30); //green
 	if (distancePirStatus == true)
 		strip.setPixelColor(1, 255, 0, 0);
 	else

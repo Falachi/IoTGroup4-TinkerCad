@@ -1,0 +1,101 @@
+On track detection:
+infrared camera, lidar
+replacement: PiR sensor
+
+Accident Prevention:
+gps, imu, magnetometer, accelerometer
+replacement: tilt sensor, force sensor, petentiometer
+
+train health tracking
+temperature, magnetometer, accelerometer
+replacement: temperature sensor, tilt, sensor, petentiometer (share the accident prevention)
+
+infrared camera, lidar
+replacement: ultrasonic distance sensor
+
+GPS, IMU:
+tilt sensor, potentiometer (for speed)
+
+temperature sensor
+
+magnetometer:
+force sensor
+
+accelerometer (for track health):
+potentiometer and tilt sensor
+
+Sensors and Input Type:
+ultrasonic distanc sensor - distance from obstacle (double)
+tilt sensor - tilt of train (double)
+potentiometer - speed of train (double)
+
+variables
+//defining the input pins
+//track detection
+const int trackDetectionPin = 6;
+//preventive stuff
+const int imuTiltPin = 5;
+const int imuAccPin = A3;
+const int forcePin = A5;
+const int tempEnginePin = A4;
+//track health
+const int trackTiltPin = 4;
+const int trackAccPin = A2;
+const int wheelTempPin = A1;
+
+//defining the output pins
+const int neoStrip = 13;
+LiquidCrystal lcd(7,8,9,10,11,12);
+Adafruit_NeoPixel strip(6, neoStrip, NEO_GRB + NEO_KHZ800);
+
+struct allData {
+    //health stuff
+    String tilt; //"good" "bad" "okay"
+    double acceleration;
+    double weight;
+    double engineTemp;
+    //track
+    String trackStatus; //"good" "bad" "okay"
+    //next data
+    allData* next;
+};
+
+check viariable:
+- overall (strip 1)
+- obstacleCheck (strip 2)
+- tiltStatus (strip 3)
+- speedStatus (strip 4)
+- weightStatus (strip 5)
+- engineTempStatus (6)
+- wheelTempStatus strip (7)
+- trackTiltStatus strip (8)
+- trainVibrationStatus ^
+
+
+stuff to do:
+- add the status functions and variables
+
+things that need to change before being saved:
+- tilt counter
+- speed ratio balancing
+- train weight ratio balancing
+- engine temp balancing
+- same for track health
+
+//a function to add a node, which will become the new head
+void addData(allData** headPtr, String tiltInput, double accelerationInput,
+double inputWeight, double inputEngineTemp, String inputTrackStatus) {
+    checkFull(*headPtr);
+    allData* newData = new allData;
+    newData->tilt = tiltInput;
+    newData->acceleration = accelerationInput;
+    newData->weight = inputWeight;
+    newData->engineTemp = inputEngineTemp;
+    newData->trackStatus = inputTrackStatus;
+    newData->next = *headPtr;
+    *headPtr = newData;
+}
+
+Serial.println("Welcome. Arduino Command:");
+    Serial.println("INPUT 'A' to view last 5 entries");
+    Serial.println("INPUT 'B' to view latest entry");
